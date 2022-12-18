@@ -3,7 +3,7 @@ const router = express.Router();
 router.use(express.json());
 
 import { PrismaClient } from "@prisma/client";
-import { checkIfExists, hashPassword } from "../utils/utils";
+import { checkIfExists, hashPassword, checkPassword } from "../utils/utils";
 
 const prisma = new PrismaClient();
 
@@ -22,7 +22,7 @@ router.get("/:id", async (req, res) => {
   res.json(user);
 });
 
-router.post("/create", async (req, res) => {
+router.post("/signUp", async (req, res) => {
   let { id, email, password, name } = req.body;
   const isRegistered = await checkIfExists(email);
   if (isRegistered) {
@@ -77,6 +77,27 @@ router.post("/delete", async (req, res) => {
       },
     });
     res.json(deletedUser);
+  }
+});
+
+router.post("/signIn", async (req, res) => {
+  const { email, password } = req.body;
+  const user = await checkIfExists(email);
+  if (!user) {
+    res.json({
+      msg: "User isn't registered. Please Sign Up",
+    });
+  } else {
+    const isPasswordCorrect = checkPassword(password, user.password);
+    if (!isPasswordCorrect) {
+      res.json({
+        msg: "Incorrect Password",
+      });
+    } else {
+      res.json({
+        msg: `Welcome ${user.name}`,
+      });
+    }
   }
 });
 

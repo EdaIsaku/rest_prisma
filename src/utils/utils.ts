@@ -20,4 +20,9 @@ const hashPassword = (password: string) => {
   return hashedPassword;
 };
 
-export { checkIfExists, hashPassword };
+const checkPassword = (password: string, hashedPassword: string) => {
+  const isCorrect = bcrypt.compareSync(password, hashedPassword);
+  return isCorrect;
+};
+
+export { checkIfExists, hashPassword, checkPassword };

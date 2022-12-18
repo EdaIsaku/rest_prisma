@@ -4,4 +4,4 @@
 
 #CRUD operations are done using Prisma
 
-#Database that is used is SQLit
+#Database that is used is SQLite
