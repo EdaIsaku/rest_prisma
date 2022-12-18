@@ -3,7 +3,7 @@ const router = express.Router();
 router.use(express.json());
 
 import { PrismaClient } from "@prisma/client";
-import { checkIfExists } from "../utils/utils";
+import { checkIfExists, hashPassword } from "../utils/utils";
 
 const prisma = new PrismaClient();
 
@@ -23,13 +23,14 @@ router.get("/:id", async (req, res) => {
 });
 
 router.post("/create", async (req, res) => {
-  const { id, email, password, name } = req.body;
+  let { id, email, password, name } = req.body;
   const isRegistered = await checkIfExists(email);
   if (isRegistered) {
     res.json({
       msg: "User with this email is already registerd",
     });
   } else {
+    password = hashPassword(password);
     const newUser = await prisma.user.create({
       data: {
         id,
