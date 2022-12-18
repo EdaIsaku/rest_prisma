@@ -2,7 +2,10 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+
 const saltRounds = process.env.SALT_ROUNDS || 30;
+const secret = process.env.SECRET_TOKEN || "RESTPRISMA2022";
 
 const salt = bcrypt.genSaltSync(+saltRounds);
 
@@ -25,4 +28,27 @@ const checkPassword = (password: string, hashedPassword: string) => {
   return isCorrect;
 };
 
-export { checkIfExists, hashPassword, checkPassword };
+const generateToken = (email: string) => {
+  if (secret !== undefined) {
+    const token = jwt.sign({ email }, secret, { expiresIn: "100s" });
+    return token;
+  }
+};
+
+const verifyToken = (token: any) => {
+  jwt.verify(token, secret, (err, decode) => {
+    if (err?.name === "TokenExpiredError") {
+      return false;
+    } else {
+      return true;
+    }
+  });
+};
+
+export {
+  checkIfExists,
+  hashPassword,
+  checkPassword,
+  generateToken,
+  verifyToken,
+};

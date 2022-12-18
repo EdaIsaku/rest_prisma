@@ -3,7 +3,14 @@ const router = express.Router();
 router.use(express.json());
 
 import { PrismaClient } from "@prisma/client";
-import { checkIfExists, hashPassword, checkPassword } from "../utils/utils";
+
+import {
+  checkIfExists,
+  hashPassword,
+  checkPassword,
+  generateToken,
+  verifyToken,
+} from "../utils/utils";
 
 const prisma = new PrismaClient();
 
@@ -94,9 +101,8 @@ router.post("/signIn", async (req, res) => {
         msg: "Incorrect Password",
       });
     } else {
-      res.json({
-        msg: `Welcome ${user.name}`,
-      });
+      const token = generateToken(email);
+      res.send({ token: token });
     }
   }
 });
