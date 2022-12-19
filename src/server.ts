@@ -17,10 +17,13 @@ app.use("/api/user/", user);
 app.use(
   "/api/news/",
   (req, res, next) => {
-    if (typeof req.query.token == "string") {
-      jwt.verify(req.query.token, secret, (err, decode) => {
-        if (err?.name === "TokenExpiredError") {
-          res.json({
+    const bearer = req.headers.authorization;
+    const token = bearer?.split(" ")[1];
+
+    if (typeof token === "string") {
+      jwt.verify(token, secret, (err, decode) => {
+        if (err) {
+          res.status(401).json({
             msg: "Your token has expired!",
           });
         } else {
