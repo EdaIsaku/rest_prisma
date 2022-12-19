@@ -35,14 +35,15 @@ const generateToken = (email: string) => {
   }
 };
 
-const verifyToken = (token: any) => {
-  jwt.verify(token, secret, (err, decode) => {
-    if (err?.name === "TokenExpiredError") {
-      return false;
+const verifyToken = (token: any): any => {
+  let result = jwt.verify(token, secret, (err: any, decode: any) => {
+    if (decode) {
+      return decode;
     } else {
-      return true;
+      return false;
     }
   });
+  return result;
 };
 
 export {
