@@ -17,7 +17,7 @@ app.use(
   async (req, res, next) => {
     const bearer = req.headers.authorization;
     const token = bearer?.split(" ")[1];
-    const isValid = verifyToken(token);
+    const isValid = await verifyToken(token);
 
     if (isValid) {
       next();

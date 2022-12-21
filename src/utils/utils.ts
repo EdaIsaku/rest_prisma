@@ -5,7 +5,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
 const saltRounds = process.env.SALT_ROUNDS || 30;
-const secret = process.env.SECRET_TOKEN || "RESTPRISMA2022";
+const secret = process.env.SECRET_TOKEN;
 
 const salt = bcrypt.genSaltSync(+saltRounds);
 
@@ -30,20 +30,22 @@ const checkPassword = (password: string, hashedPassword: string) => {
 
 const generateToken = (email: string) => {
   if (secret !== undefined) {
-    const token = jwt.sign({ email }, secret, { expiresIn: "100s" });
+    const token = jwt.sign({ email }, secret, { expiresIn: "1000s" });
     return token;
   }
 };
 
 const verifyToken = (token: any): any => {
-  let result = jwt.verify(token, secret, (err: any, decode: any) => {
-    if (decode) {
-      return decode;
-    } else {
-      return false;
-    }
-  });
-  return result;
+  if (secret !== undefined) {
+    let result = jwt.verify(token, secret, (err: any, decode: any) => {
+      if (decode) {
+        return decode;
+      } else {
+        return false;
+      }
+    });
+    return result;
+  }
 };
 
 export {
