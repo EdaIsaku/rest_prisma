@@ -1,6 +1,7 @@
 import * as dotenv from "dotenv";
 dotenv.config();
-const secret = process.env.SECRET_TOKEN || "RESTPRISMA2022";
+
+import helmet from "helmet";
 
 import express from "express";
 const app = express();
@@ -10,6 +11,8 @@ const PORT = process.env.PORT || 3000;
 import user from "./router/user";
 import news from "./router/news";
 import { verifyToken } from "./utils/utils";
+
+app.use(helmet());
 
 app.use("/api/user/", user);
 app.use(
