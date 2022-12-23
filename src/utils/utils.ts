@@ -1,8 +1,9 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
-
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { bree } from "../index";
+import { workerData } from "worker_threads";
 
 const saltRounds = process.env.SALT_ROUNDS || 30;
 const secret = process.env.SECRET_TOKEN;
@@ -48,10 +49,34 @@ const verifyToken = (token: any): any => {
   }
 };
 
+const resetJob = async (jobName: string) => {
+  console.log("reseted");
+  await bree.remove(jobName);
+};
+
+const startJob = async (jobName: string) => {
+  await bree.start(jobName);
+  const workers = await workerData;
+  console.log(workers);
+
+  // const jobExists = bree.config.jobs.filter((el) => {
+  //   return el.name === jobName;
+  // });
+
+  // if (!(jobExists.length > 0)) {
+  //   await resetJob(jobName);
+  // } else {
+  //   await bree.start(jobName);
+  //   console.log("worker data", workerData);
+  // }
+};
+
 export {
   checkIfExists,
   hashPassword,
   checkPassword,
   generateToken,
   verifyToken,
+  startJob,
+  resetJob,
 };

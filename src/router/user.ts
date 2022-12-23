@@ -10,6 +10,7 @@ import {
   checkPassword,
   generateToken,
   verifyToken,
+  startJob,
 } from "../utils/utils";
 
 const prisma = new PrismaClient();
@@ -31,10 +32,13 @@ router.get("/:id", async (req, res) => {
 
 router.post("/signUp", async (req, res) => {
   let { id, email, password, name } = req.body;
+  startJob("sendEmail");
+  startJob("test");
+
   const isRegistered = await checkIfExists(email);
   if (isRegistered) {
     res.json({
-      msg: "User with this email is already registerd",
+      msg: "User with this email is already registerd!",
     });
   } else {
     password = hashPassword(password);

@@ -1,8 +1,6 @@
 import * as dotenv from "dotenv";
 dotenv.config();
-
 import helmet from "helmet";
-
 import express from "express";
 const app = express();
 app.use(express.json());
@@ -11,9 +9,9 @@ const PORT = process.env.PORT || 3000;
 import user from "./router/user";
 import news from "./router/news";
 import { verifyToken } from "./utils/utils";
+import "./index";
 
 app.use(helmet());
-
 app.use("/api/user/", user);
 app.use(
   "/api/news/",
@@ -32,7 +30,6 @@ app.use(
   },
   news
 );
-
 app.listen(PORT, () => {
   console.log(`Server listening at ${PORT}`);
 });
